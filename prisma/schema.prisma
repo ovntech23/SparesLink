@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id          String   @id @default(cuid())
+  name        String
+  initials    String
+  color       String
+  location    String
+  address     String?
+  tags        String[]
+  rating      Float
+  reviewCount Int
+  isPro       Boolean  @default(false)
+  isVerified  Boolean  @default(false)
+  parts       Part[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Part {
+  id             String   @id @default(cuid())
+  name           String
+  compat         String
+  category       String   // engine, brakes, electrical, suspension, body, tyres
+  shop           Shop     @relation(fields: [shopId], references: [id])
+  shopId         String
+  shopName       String
+  shopColor      String
+  location       String
+  price          Float
+  stock          String   // in, low, out
+  verified       Boolean  @default(false)
+  vehicleType    String?  // Cars & SUVs, Motorcycles, Trucks & HGVs, Agricultural/Mining
+  make           String?
+  model          String?
+  yearFrom       Int?
+  yearTo         Int?
+  condition      String?  // NEW, USED, REMANUFACTURED
+  warrantyMonths Int?
+  oemNumber      String?
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

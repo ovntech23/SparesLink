@@ -18,6 +18,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Generate Prisma Client
+RUN npx prisma generate
+
 # next.config.ts sets output: "standalone" which produces
 # a minimal self-contained server in .next/standalone
 RUN npm run build
