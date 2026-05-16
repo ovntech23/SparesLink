@@ -51,9 +51,15 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts ./scripts
 
-# standalone folder includes everything needed (server.js + node_modules)
+# standalone folder includes server.js and a PRUNED node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Re-copy the full node_modules from builder to ensure utilities like seed.js work
+# (standalone prunes modules not used in the main app bundle)
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
 # Install prisma globally for terminal utilities
 RUN npm install -g prisma@^6.3.1
