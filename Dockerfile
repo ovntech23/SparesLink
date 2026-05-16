@@ -36,9 +36,9 @@ ENV NODE_ENV=production
 # Disable Next.js telemetry in CI/production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create a non-root user for security
+# Create a non-root user with a home directory to avoid npm EACCES issues
 RUN addgroup --system --gid 1001 nodejs \
- && adduser  --system --uid 1001 nextjs
+ && adduser  --system --uid 1001 --home /app nextjs
 
 # Copy only what's needed to run the server
 COPY --from=builder /app/public ./public
