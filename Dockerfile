@@ -48,12 +48,19 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts ./scripts
 
+# Copy the specific node_modules needed for seeding and prisma CLI
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
+COPY --from=builder /app/node_modules/get-tsconfig ./node_modules/get-tsconfig
+COPY --from=builder /app/node_modules/resolve-pkg-maps ./node_modules/resolve-pkg-maps
+
 # standalone folder includes everything needed (server.js + node_modules)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Install prisma and tsx in the runner stage for terminal utilities
-RUN npm install -g prisma@^6.3.1 tsx
+# Install prisma globally in the runner stage
+RUN npm install -g prisma@^6.3.1
 
 USER nextjs
 
