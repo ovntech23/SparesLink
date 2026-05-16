@@ -21,6 +21,9 @@ COPY . .
 # Generate Prisma Client
 RUN npx prisma generate
 
+# Compile seed script to JS
+RUN npx tsc scripts/seed.ts --outDir scripts --module commonjs --target es2020 --esModuleInterop --skipLibCheck --moduleResolution node
+
 # next.config.ts sets output: "standalone" which produces
 # a minimal self-contained server in .next/standalone
 RUN npm run build
@@ -40,26 +43,19 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs \
  && adduser  --system --uid 1001 --home /app nextjs
 
-# Ensure the app directory is writable by the nextjs user
+# Ensure the app directory is writable
 RUN chown -R nextjs:nodejs /app
 
-# Copy only what's needed to run the server
+# Copy files
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts ./scripts
-
-# Copy the specific node_modules needed for seeding and prisma CLI
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
-COPY --from=builder /app/node_modules/get-tsconfig ./node_modules/get-tsconfig
-COPY --from=builder /app/node_modules/resolve-pkg-maps ./node_modules/resolve-pkg-maps
 
 # standalone folder includes everything needed (server.js + node_modules)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Install prisma globally in the runner stage
+# Install prisma globally for terminal utilities
 RUN npm install -g prisma@^6.3.1
 
 USER nextjs
