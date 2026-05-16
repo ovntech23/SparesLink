@@ -5,13 +5,25 @@ import { SearchBar } from '@/components/SearchBar';
 import { VehicleFinder } from '@/components/VehicleFinder';
 import { FeaturedShops } from '@/components/FeaturedShops';
 import { PartsCatalog } from '@/components/PartsCatalog';
-import { PARTS } from '@/lib/data';
+import prisma from '@/lib/prisma';
+import { Part, Shop } from '@/types';
 
 // This is a React Server Component — no "use client" directive.
 // Static sections (Navbar, Hero, FeaturedShops, Footer) are rendered on the
 // server with zero client-side JS hydration overhead.
 // The interactive catalog is delegated to <PartsCatalog> (Client Component).
-export default function Home() {
+export default async function Home() {
+  // Fetch real data from the database
+  const [parts, shops] = await Promise.all([
+    prisma.part.findMany({
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.shop.findMany({
+      where: { isVerified: true }, // Only show verified shops in featured
+      take: 3,
+    }),
+  ]);
+
   return (
     <main className="min-h-screen bg-brand-cream flex flex-col relative">
 
@@ -42,10 +54,10 @@ export default function Home() {
           <section className="lg:col-span-9 flex flex-col">
 
             {/* Featured Shops Row — RSC */}
-            <FeaturedShops />
+            <FeaturedShops shops={shops as unknown as Shop[]} />
 
             {/* Client boundary: filtering, sorting, part grid, modals, toasts */}
-            <PartsCatalog parts={PARTS} />
+            <PartsCatalog parts={parts as unknown as Part[]} />
 
           </section>
 

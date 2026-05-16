@@ -2,13 +2,17 @@
 
 import React from 'react';
 import { IconMapPin, IconStarFilled, IconCircleCheck, IconArrowRight } from '@tabler/icons-react';
-import { SHOPS } from '@/lib/data';
+import { Shop } from '@/types';
 import { useStore } from '@/store/useStore';
 
 const bodyFont    = 'var(--font-body)';
 const displayFont = 'var(--font-display)';
 
-export const FeaturedShops: React.FC = () => {
+interface FeaturedShopsProps {
+  shops: Shop[];
+}
+
+export const FeaturedShops: React.FC<FeaturedShopsProps> = ({ shops }) => {
   const { showToast } = useStore();
 
   return (
@@ -41,7 +45,7 @@ export const FeaturedShops: React.FC = () => {
 
       {/* Cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {SHOPS.map((shop, index) => {
+        {shops.map((shop, index) => {
           const isFeatured = index === 0;
 
           return (
