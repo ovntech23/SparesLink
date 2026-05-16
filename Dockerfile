@@ -36,14 +36,22 @@ ENV NODE_ENV=production
 # Disable Next.js telemetry in CI/production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create a non-root user with a home directory to avoid npm EACCES issues
+# Create a non-root user with a home directory
 RUN addgroup --system --gid 1001 nodejs \
  && adduser  --system --uid 1001 --home /app nextjs
 
+# Ensure the app directory is writable by the nextjs user
+RUN chown -R nextjs:nodejs /app
+
 # Copy only what's needed to run the server
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Install prisma and tsx in the runner stage for terminal utilities
+RUN npm install -g prisma@^6.3.1 tsx
 
 USER nextjs
 
