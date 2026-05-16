@@ -1,26 +1,163 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * SparesLink — Global Stylesheet
+ * Design System: Syne (headings/display) + DM Sans (body/UI)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/* 1. Google Fonts — must be first @import */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+/* 2. Tailwind CSS v4 */
 @import "tailwindcss";
 
+/* ── Design tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand palette */
+  --orange:     #E8500A;
+  --orange-dk:  #B83E07;
+  --orange-lt:  #FDF0EA;
+  --ink:        #0F0E0C;
+  --ink2:       #3D3B37;
+  --ink3:       #7A7770;
+  --cream:      #FAF8F4;
+  --white:      #FFFFFF;
+  --border:     #E4E1DA;
+  --border-md:  #CEC9BF;
+  --green:      #1A7A4A;
+  --green-lt:   #E8F5EE;
+  --blue:       #1B5FA8;
+  --blue-lt:    #EBF2FB;
+  --amber:      #B86A00;
+  --amber-lt:   #FEF3E2;
+
+  /* Border radii */
+  --r:  10px;
+  --rs:  6px;
+
+  /* Font stacks — canonical references used throughout */
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-body:    "DM Sans", system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Tailwind theme extension ── */
+@theme {
+  /* Utility class names Tailwind generates from these:
+     font-syne    → Syne
+     font-dmsans  → DM Sans  */
+  --font-syne:   "Syne", system-ui, sans-serif;
+  --font-dmsans: "DM Sans", system-ui, sans-serif;
+
+  /* Colour tokens → bg-brand-*, text-brand-*, border-brand-* */
+  --color-brand-orange:    var(--orange);
+  --color-brand-orange-dk: var(--orange-dk);
+  --color-brand-orange-lt: var(--orange-lt);
+  --color-brand-ink:       var(--ink);
+  --color-brand-ink2:      var(--ink2);
+  --color-brand-ink3:      var(--ink3);
+  --color-brand-cream:     var(--cream);
+  --color-brand-border:    var(--border);
+  --color-brand-border-md: var(--border-md);
+  --color-brand-green:     var(--green);
+  --color-brand-green-lt:  var(--green-lt);
+  --color-brand-blue:      var(--blue);
+  --color-brand-blue-lt:   var(--blue-lt);
+  --color-brand-amber:     var(--amber);
+  --color-brand-amber-lt:  var(--amber-lt);
+
+  --radius-r:  var(--r);
+  --radius-rs: var(--rs);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base typography ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  background-color: var(--cream);
 }
+
+/*
+ * .font-heading  — Syne 800, letter-spacing -1px
+ * Applied to h1–h6 automatically + any element with this class.
+ * This is the single source of truth for display typography.
+ */
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;   /* ≈ -1px at 24px, tighter at larger sizes */
+  line-height: 1.1;
+}
+
+/* Price figures: Syne 700 per spec */
+.price-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+/* Currency label: 12px DM Sans, ink3 */
+.currency-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Category badge colours ── */
+.badge-engine     { background: var(--amber-lt); color: var(--amber); }
+.badge-brake,
+.badge-brakes     { background: var(--blue-lt);  color: var(--blue);  }
+.badge-body       { background: var(--green-lt); color: var(--green); }
+.badge-electrical { background: #F0EEFF;         color: #5A3FB5;      }
+.badge-suspension { background: #FFF0F6;         color: #A03070;      }
+.badge-tyres      { background: #F4F4F4;         color: #555555;      }
+
+/* ── Status badges ── */
+.badge-instock  { background: var(--green-lt); color: var(--green); }
+.badge-lowstock { background: var(--amber-lt); color: var(--amber); }
+.badge-outstock { background: #FEF0F0;         color: #C0392B;      }
+.badge-verified { background: var(--green-lt); color: var(--green); }
+.badge-pro {
+  background:  var(--orange);
+  color:       var(--white);
+  font-family: var(--font-body);
+  font-size:   9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Motion / interaction utilities ── */
+.transition-premium {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px -10px rgba(15, 14, 12, 0.10);
+}
+
+/* ── Utility: hide scrollbar but keep scroll ── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

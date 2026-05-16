@@ -1,0 +1,22 @@
+# Dependencies (reinstalled inside the image)
+node_modules
+npm-debug.log*
+
+# Next.js build output (rebuilt inside the image)
+.next
+out
+
+# Local env files — set these in Coolify's environment variables panel
+.env*
+
+# Dev tooling — not needed in the image
+.git
+.gitignore
+.eslintrc*
+eslint.config.*
+README.md
+*.md
+
+# OS noise
+.DS_Store
+Thumbs.db
