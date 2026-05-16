@@ -47,6 +47,8 @@ RUN chown -R nextjs:nodejs /app
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts ./scripts
+
+# standalone folder includes everything needed (server.js + node_modules)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
