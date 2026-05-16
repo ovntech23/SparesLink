@@ -1,8 +1,9 @@
 # ─────────────────────────────────────────────────────────────
 # Stage 1 — Install dependencies
 # ─────────────────────────────────────────────────────────────
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+FROM node:20-slim AS deps
+# libssl is often needed for various native deps on debian
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -11,7 +12,7 @@ RUN npm ci
 # ─────────────────────────────────────────────────────────────
 # Stage 2 — Build the application
 # ─────────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -24,7 +25,7 @@ RUN npm run build
 # ─────────────────────────────────────────────────────────────
 # Stage 3 — Production runtime (smallest possible image)
 # ─────────────────────────────────────────────────────────────
-FROM node:20-alpine AS runner
+FROM node:20-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
